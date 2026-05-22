@@ -429,10 +429,6 @@
                 <span class="hud-label">หมวดหมู่</span>
                 <span class="hud-value" id="hud-category" style="font-size: clamp(0.9rem, 2.5vw, 1.1rem);">-</span>
             </div>
-            <div class="hud-item">
-                <span class="hud-label">เวลา</span>
-                <span class="hud-value" id="hud-timer">00:00</span>
-            </div>
         </div>
 
         <div class="image-wrapper">
@@ -453,14 +449,7 @@
             <div class="sequence-display" id="res-sequence"></div>
 
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div style="color: var(--text-secondary);">เพศ</div>
-                    <strong id="res-gender" style="color: var(--text-primary);">--</strong>
-                </div>
-                <div class="stat-card">
-                    <div style="color: var(--text-secondary);">เวลาที่ใช้</div>
-                    <strong id="res-time" style="color: var(--text-primary);">-- วินาที</strong>
-                </div>
+                <!-- เอาการ์ด เพศ และ เวลาที่ใช้ ออกจากตรงนี้ -->
                 <div class="stat-card">
                     <div style="color: var(--success);">เจอจุดถูก</div>
                     <strong id="res-correct" style="color: var(--text-primary);">0</strong>
@@ -490,7 +479,7 @@
         let state = {
             playerGender: null, imagesData: [], currentImage: null,
             attemptsLeft: 3, maxAttempts: 3, clickSequence: [], foundPoints: [],
-            startTime: null, timerInterval: null, timeUsed: 0
+            startTime: null, timeUsed: 0
         };
 
         const MOCK_IMAGES = [
@@ -655,22 +644,13 @@
             area.onclick = handleImageClick;
 
             state.startTime = Date.now();
-            if(state.timerInterval) clearInterval(state.timerInterval);
-            state.timerInterval = setInterval(updateTimer, 1000);
+            state.timeUsed = 0;
 
             navTo('game-screen');
         }
 
         function updateHUD() { document.getElementById('hud-attempts').textContent = `${state.attemptsLeft} / ${state.maxAttempts}`; }
         
-        function updateTimer() {
-            const diff = Math.floor((Date.now() - state.startTime) / 1000);
-            state.timeUsed = diff;
-            const m = String(Math.floor(diff / 60)).padStart(2, '0');
-            const s = String(diff % 60).padStart(2, '0');
-            document.getElementById('hud-timer').textContent = `${m}:${s}`;
-        }
-
         function handleImageClick(e) {
             if(state.attemptsLeft <= 0) return;
 
@@ -736,8 +716,10 @@
         }
 
         function endGame() {
-            clearInterval(state.timerInterval);
             document.getElementById('click-area').onclick = null;
+            
+            // คำนวณเวลาที่ใช้ไปทั้งหมดเมื่อจบเกม (วินาที)
+            state.timeUsed = Math.floor((Date.now() - state.startTime) / 1000);
 
             const patternKey = state.clickSequence.join(',');
             const resultData = PATTERN_DB[patternKey] || PATTERN_DB["W,W,W"];
@@ -781,8 +763,7 @@
                 seqContainer.appendChild(box);
             });
 
-            document.getElementById('res-gender').textContent = state.playerGender || "ไม่ระบุ";
-            document.getElementById('res-time').textContent = state.timeUsed;
+            // เอาคำสั่งอัปเดต res-gender และ res-time ออก
             document.getElementById('res-correct').textContent = correctCount;
             document.getElementById('res-wrong').textContent = 3 - correctCount;
         }
