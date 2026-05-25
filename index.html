@@ -14,7 +14,7 @@
             --primary: #00A8E8;
             --primary-hover: #0089C2;
             --secondary: #FF6B00;
-            --success: #39FF7E;
+            --success: #10B981;
             --highlight: #FFDD00;
             --bg-color: #F0F7FF;
             --panel-bg: #FFFFFF;
@@ -442,13 +442,10 @@
     <!-- Result Screen -->
     <section id="result-screen" class="screen">
         <div class="card">
-            <div class="pattern-badge" id="res-pattern-num">Pattern #--</div>
             <h2 id="res-personality-title" style="color: var(--primary);">กำลังประมวลผล...</h2>
             <p id="res-personality-desc">...</p>
 
-            <div class="sequence-display" id="res-sequence"></div>
-
-            <div class="stats-grid">
+            <div class="stats-grid" style="margin-top: 25px;">
                 <!-- เอาการ์ด เพศ และ เวลาที่ใช้ ออกจากตรงนี้ -->
                 <div class="stat-card">
                     <div style="color: var(--success);">เจอจุดถูก</div>
@@ -747,21 +744,11 @@
         }
 
         function renderResult(resultData) {
-            document.getElementById('res-pattern-num').textContent = `Pattern #${resultData.id}`;
             document.getElementById('res-personality-title').textContent = resultData.title;
             document.getElementById('res-personality-desc').textContent = resultData.desc;
 
-            const seqContainer = document.getElementById('res-sequence');
-            seqContainer.innerHTML = '';
-            let correctCount = 0;
-            
-            state.clickSequence.forEach(item => {
-                const box = document.createElement('div');
-                box.className = 'seq-box ' + (item === "W" ? 'wrong' : 'correct');
-                box.textContent = item === "W" ? "✕" : item;
-                if(item !== "W") correctCount++;
-                seqContainer.appendChild(box);
-            });
+            // คำนวณจำนวนที่กดถูกจาก array โดยตรง (ไม่สร้าง element หน้าเว็บแล้ว)
+            let correctCount = state.clickSequence.filter(item => item !== "W").length;
 
             // เอาคำสั่งอัปเดต res-gender และ res-time ออก
             document.getElementById('res-correct').textContent = correctCount;
