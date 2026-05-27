@@ -2,766 +2,661 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
+    <!-- PWA & Mobile Optimization Meta Tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#F0F7FF">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <title>เนื้อคู่ของคุณเป็นใคร? | Find Your Soulmate?</title>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>เนื้อคู่ของคุณเป็นใคร? Find Your Soulmate?</title>
     
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700&family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+
     <style>
+        /* =========================================
+           GLOBAL DESIGN & FLUID RESPONSIVE CSS
+           ========================================= */
         :root {
             --primary: #00A8E8;
-            --primary-hover: #0089C2;
             --secondary: #FF6B00;
-            --success: #10B981;
+            --success: #39FF7E;
             --highlight: #FFDD00;
             --bg-color: #F0F7FF;
-            --panel-bg: #FFFFFF;
-            --text-primary: #1A2A44;
-            --text-secondary: #555555;
-            --shadow-soft: 0 10px 30px rgba(0, 168, 232, 0.1);
-            --shadow-card: 0 20px 40px rgba(26, 42, 68, 0.05);
-            --border-radius: clamp(16px, 4vw, 24px);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --text-main: #1A2A44;
+            --text-sub: #555555;
+            
+            /* Fluid Typography: ปรับขนาดตามหน้าจออัตโนมัติ (เหมาะกับผู้สูงอายุ) */
+            --font-sm: clamp(16px, 3.5vw, 20px);
+            --font-base: clamp(18px, 4vw, 24px);
+            --font-large: clamp(22px, 5vw, 28px);
+            --font-xl: clamp(28px, 7vw, 42px);
+            
+            /* Touch Targets: ปุ่มขนาดใหญ่เสมอ */
+            --btn-height: clamp(75px, 10vh, 90px); 
+            --click-marker-size: clamp(44px, 10vw, 60px);
         }
 
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Prompt', sans-serif;
-            -webkit-tap-highlight-color: transparent; /* Remove touch highlight on mobile */
+            /* ป้องกันการคลุมดำและไฮไลท์สีฟ้าเวลาแตะบนมือถือ */
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            user-select: none;
         }
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-primary);
-            overflow-x: hidden;
+            color: var(--text-main);
+            font-family: 'Sarabun', 'Prompt', sans-serif;
+            font-size: var(--font-base);
+            line-height: 1.5;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            /* Safe Area Support for Notches/Dynamic Island */
+            /* Safe Area สำหรับ iPhone Notch / Dynamic Island */
             padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(0, 168, 232, 0.05), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(255, 107, 0, 0.03), transparent 25%);
+            overflow-x: hidden;
         }
 
         .screen {
             display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
             width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
             padding: clamp(15px, 4vw, 30px);
-            opacity: 0;
-            transition: opacity 0.4s ease-in-out;
-            position: absolute;
-            top: 0;
-            left: 0;
+            /* GPU Accelerated Animation */
+            animation: slideFadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            will-change: transform, opacity;
         }
 
         .screen.active {
-            display: flex;
-            opacity: 1;
-            position: relative;
+            display: block;
         }
 
-        .card {
-            background: var(--panel-bg);
-            border-radius: var(--border-radius);
-            padding: clamp(25px, 6vw, 40px);
-            box-shadow: var(--shadow-card);
-            max-width: 600px;
-            width: 100%;
+        @keyframes slideFadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =========================================
+           TYPOGRAPHY
+           ========================================= */
+        h1 {
+            font-family: 'Prompt', sans-serif;
+            font-size: var(--font-xl);
+            color: var(--primary);
             text-align: center;
-            position: relative;
-            z-index: 10;
+            margin-bottom: 12px;
+            font-weight: 700;
         }
 
-        /* Fluid Typography */
-        h1 { font-size: clamp(1.8rem, 5vw, 2.5rem); margin-bottom: 15px; color: var(--text-primary); }
-        h2 { font-size: clamp(1.4rem, 4vw, 1.8rem); margin-bottom: 15px; color: var(--text-primary); }
-        h3 { font-size: clamp(1.1rem, 3vw, 1.4rem); margin-bottom: 15px; color: var(--text-primary); }
-        p { font-size: clamp(0.95rem, 2.5vw, 1.1rem); color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px; }
+        p {
+            text-align: center;
+            color: var(--text-sub);
+            margin-bottom: 20px;
+        }
 
+        /* =========================================
+           BUTTONS & TOUCH OPTIMIZATION
+           ========================================= */
         .btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            min-height: 52px; /* Touch Target Size Minimum 44px (using 52 for comfort) */
-            font-size: clamp(1rem, 2.5vw, 1.1rem);
-            font-weight: 500;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: 0 4px 15px rgba(0, 168, 232, 0.3);
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            text-decoration: none;
-            user-select: none;
-            width: auto;
+            width: 100%;
+            min-height: var(--btn-height);
+            border: none;
+            border-radius: 20px;
+            font-family: 'Prompt', sans-serif;
+            font-size: var(--font-large);
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            will-change: transform;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 168, 232, 0.4);
-            background: var(--primary-hover);
-        }
-        
-        /* Active State for Touch Feedback */
+        /* Active states สำหรับ Touch Device */
         .btn:active {
             transform: scale(0.96);
-            box-shadow: 0 2px 8px rgba(0, 168, 232, 0.3);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:disabled {
+            background-color: #cbd5e1;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .btn-secondary {
-            background: var(--secondary);
-            box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
+            background-color: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
         }
 
-        .btn-secondary:hover { box-shadow: 0 8px 25px rgba(255, 107, 0, 0.4); }
-        .btn-secondary:active { box-shadow: 0 2px 8px rgba(255, 107, 0, 0.3); transform: scale(0.96); }
-
-        #welcome-screen .logo-icon {
-            font-size: clamp(3rem, 8vw, 4rem);
-            margin-bottom: 20px;
-            animation: float 3s ease-in-out infinite;
+        .btn-gender {
+            background-color: white;
+            color: var(--text-main);
+            border: 2px solid #e2e8f0;
         }
 
-        .gender-options {
+        .btn-gender.selected {
+            border-color: var(--primary);
+            background-color: #e6f7ff;
+            color: var(--primary);
+            border-width: 3px;
+        }
+
+        .btn-text {
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            font-size: var(--font-base);
+            box-shadow: none;
+            text-decoration: underline;
+            min-height: 50px;
+        }
+
+        /* =========================================
+           CARDS & LAYOUT
+           ========================================= */
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: clamp(20px, 5vw, 40px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        /* =========================================
+           GAME AREA & RESPONSIVE IMAGE
+           ========================================= */
+        .game-header {
             display: flex;
-            gap: clamp(10px, 3vw, 20px);
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 25px 0;
-        }
-
-        .gender-card {
-            background: var(--bg-color);
-            border: 2px solid transparent;
-            border-radius: 20px;
-            padding: clamp(20px, 4vw, 30px) 15px;
-            cursor: pointer;
-            transition: var(--transition);
-            flex: 1;
-            min-width: 100px;
-            text-align: center;
-            user-select: none;
-        }
-
-        .gender-card:active { transform: scale(0.95); }
-        .gender-card.selected { border-color: var(--primary); background: white; box-shadow: var(--shadow-soft); }
-        .gender-card .emoji { font-size: clamp(2rem, 6vw, 3rem); margin-bottom: 8px; display: block; }
-
-        .step-indicator { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
-        .step-dot { width: 10px; height: 10px; border-radius: 50%; background: #d1e5f5; transition: var(--transition); }
-        .step-dot.active { background: var(--primary); transform: scale(1.3); }
-        .step-dot.done { background: var(--success); }
-
-        .rules-list {
-            text-align: left; background: var(--bg-color); padding: 20px; border-radius: 16px; margin-bottom: 30px;
-        }
-        .rules-list li { margin-bottom: 12px; list-style: none; padding-left: 28px; position: relative; font-size: clamp(0.9rem, 2.5vw, 1rem);}
-        .rules-list li::before { content: '📌'; position: absolute; left: 0; top: 0; }
-
-        #game-screen { padding: 10px; justify-content: flex-start; }
-
-        .game-hud {
-            display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
             align-items: center;
-            width: 100%;
-            max-width: 800px;
-            background: var(--panel-bg);
-            padding: clamp(10px, 2vw, 15px) clamp(15px, 4vw, 25px);
+            margin-bottom: 15px;
+            background: white;
+            padding: 15px 25px;
             border-radius: 20px;
-            box-shadow: var(--shadow-soft);
-            margin: 10px 0 20px 0;
-            z-index: 20;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            font-family: 'Prompt', sans-serif;
+            font-size: var(--font-large);
+            font-weight: 600;
         }
 
-        .hud-item { display: flex; flex-direction: column; align-items: center; }
-        .hud-label { font-size: clamp(0.7rem, 2vw, 0.8rem); color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
-        .hud-value { font-size: clamp(1.2rem, 3.5vw, 1.5rem); font-weight: 700; color: var(--primary); }
-
-        .image-wrapper {
-            position: relative;
+        .game-wrapper {
             width: 100%;
-            max-width: 800px;
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 0; 
+            text-align: center; /* จัดให้รูปอยู่ตรงกลางเสมอ */
+            background: transparent;
         }
 
+        /* โครงสร้างใหม่ที่แนบสนิทกับรูปภาพจริงๆ 100% */
         .image-container {
             position: relative;
-            display: inline-block; 
+            display: inline-block; /* ให้กล่องหดตัวรัดรูปภาพพอดี */
             max-width: 100%;
-            max-height: 65vh; /* Prevent overflow on small screens */
-            background: #fff;
             border-radius: 16px;
-            box-shadow: var(--shadow-card);
-            overflow: hidden;
-            user-select: none;
-            touch-action: none; /* Prevent browser handling of touch (like scroll/zoom) inside the image */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            background: #fff;
+            overflow: hidden; /* เผื่อขอบมน */
         }
 
         .image-container img {
             display: block;
-            max-width: 100%;
-            max-height: 65vh;
             width: auto;
+            max-width: 100%;
             height: auto;
+            max-height: 60vh; /* ไม่ให้รูปสูงล้นจอแนวดิ่ง */
             object-fit: contain;
-            pointer-events: none; /* Prevent dragging the image itself */
+            pointer-events: none; /* กันเซฟรูปลากรูปบนมือถือ */
         }
 
-        .click-area {
+        /* เลเยอร์รับค่าคลิก ทับพอดีเป๊ะกับความกว้าง/สูงของรูป */
+        .click-layer {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            z-index: 10;
             cursor: crosshair;
+            z-index: 2;
         }
 
-        .marker {
+        /* Markers (จุดถูก/ผิด/เฉลย) */
+        .click-marker, .solution-marker {
             position: absolute;
-            transform: translate(-50%, -50%);
+            width: var(--click-marker-size);
+            height: var(--click-marker-size);
             border-radius: 50%;
-            z-index: 20;
-            pointer-events: none; /* Let clicks pass through if needed */
-            will-change: transform, opacity;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 10;
+            pointer-events: none;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        .marker.correct {
-            border: 3px solid var(--success);
-            background: rgba(57, 255, 126, 0.35);
-            animation: pulse-success 1.5s infinite;
+        @keyframes popIn {
+            to { transform: translate(-50%, -50%) scale(1); }
         }
 
-        .marker.wrong {
-            border: 3px solid var(--secondary);
-            background: rgba(255, 107, 0, 0.35);
-            animation: shake-wrong 0.4s cubic-bezier(.36,.07,.19,.97) both;
-            width: 44px !important; /* Min touch size */
-            height: 44px !important;
+        .click-marker {
+            border: 4px solid white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
+        .marker-correct { background-color: var(--success); }
+        .marker-wrong { background-color: var(--secondary); }
 
-        .pattern-badge {
-            display: inline-block;
-            background: #fff8e1;
-            color: #f5b000;
-            padding: 6px 16px;
-            border-radius: 50px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            border: 1px solid #ffe599;
-            font-size: 0.9rem;
-        }
-
-        .sequence-display { display: flex; justify-content: center; gap: clamp(8px, 2vw, 15px); margin: 20px 0; flex-wrap: wrap; }
-        .seq-box {
-            width: clamp(45px, 12vw, 60px);
-            height: clamp(45px, 12vw, 60px);
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: clamp(1.2rem, 3vw, 1.5rem);
-            font-weight: bold;
-            box-shadow: var(--shadow-soft);
-        }
-        .seq-box.correct { background: var(--success); color: white; }
-        .seq-box.wrong { background: var(--secondary); color: white; }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-            gap: 12px;
-            margin-bottom: 25px;
-            width: 100%;
-        }
-
-        .stat-card { background: var(--bg-color); padding: 12px; border-radius: 12px; text-align: center; }
-        .stat-card div { font-size: clamp(0.75rem, 2vw, 0.85rem); margin-bottom: 4px; }
-        .stat-card strong { font-size: clamp(1rem, 3vw, 1.2rem); }
-
-        .grid { display: grid; }
-        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
-        .gap-3 { gap: 0.75rem; }
-        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
-        .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
-        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
-        .mt-2 { margin-top: 0.5rem; }
-        .rounded-2xl { border-radius: 1rem; }
-        .font-semibold { font-weight: 600; }
-        .font-medium { font-weight: 500; }
-        .text-lg { font-size: 1.125rem; }
-        .text-sm { font-size: 0.875rem; }
-        .flex { display: flex; }
-        .items-center { align-items: center; }
-        .justify-center { justify-content: center; }
-        .text-gray-400 { color: #9ca3af; background: transparent; border: none; cursor: pointer; outline: none; }
-        .text-gray-400:hover { color: #4b5563; }
-        .transition-colors { transition: all 0.2s ease; }
-
-        .btn-minimal {
-            background: #ffffff;
-            border: 2px solid #e2e8f0;
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            user-select: none;
-            outline: none;
-        }
-        .btn-minimal:hover {
-            border-color: var(--primary);
-            background: #f8fafc;
-            transform: translateY(-2px);
-        }
-        .btn-minimal:active, .text-gray-400:active {
-            transform: scale(0.98);
-        }
-        .btn-minimal.selected {
-            border-color: var(--primary);
-            background: var(--primary);
+        .solution-marker {
+            border: 4px dashed white;
+            background-color: rgba(128, 128, 128, 0.8);
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 700;
+            font-size: var(--font-base);
         }
 
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
-        @keyframes pulse-success {
-            0% { box-shadow: 0 0 0 0 rgba(57, 255, 126, 0.6); transform: translate(-50%, -50%) scale(0.95); }
-            70% { box-shadow: 0 0 0 12px rgba(57, 255, 126, 0); transform: translate(-50%, -50%) scale(1); }
-            100% { box-shadow: 0 0 0 0 rgba(57, 255, 126, 0); transform: translate(-50%, -50%) scale(0.95); }
-        }
-        @keyframes shake-wrong {
-            10%, 90% { transform: translate(-52%, -50%); }
-            20%, 80% { transform: translate(-48%, -50%); }
-            30%, 50%, 70% { transform: translate(-54%, -50%); }
-            40%, 60% { transform: translate(-46%, -50%); }
+        /* =========================================
+           RESULT SECTION
+           ========================================= */
+        #result-section {
+            display: none;
+            margin-top: 30px;
+            animation: slideFadeUp 0.6s ease-out;
         }
 
-        #loading-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 9999; transition: opacity 0.4s ease;
+        /* =========================================
+           MODAL (วิธีเล่น)
+           ========================================= */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(15px, 4vw, 30px);
+            opacity: 0;
+            transition: opacity 0.3s;
         }
-        .spinner {
-            width: 44px; height: 44px;
-            border: 4px solid rgba(0, 168, 232, 0.2);
-            border-top-color: var(--primary); border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Landscape orientation adjustments for mobile */
+        .modal-overlay.show {
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 24px;
+            padding: clamp(20px, 5vw, 40px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transform: translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-content h2 { color: var(--primary); font-family: 'Prompt', sans-serif; text-align: center; margin-bottom: 20px;}
+        .modal-content ul { padding-left: 25px; margin-bottom: 25px; color: var(--text-sub); }
+        .modal-content li { margin-bottom: 12px; }
+
+        /* Media Query สำหรับจอแนวนอน (Landscape) เพื่อไม่ให้รูปใหญ่ทับพื้นที่ */
         @media (orientation: landscape) and (max-height: 600px) {
-            .screen { padding: 10px; }
-            .image-container { max-height: 75vh; }
-            .game-hud { padding: 8px 15px; margin-bottom: 10px; }
-            .card { padding: 20px; }
-            h1 { font-size: 1.5rem; }
-            h2 { font-size: 1.3rem; }
-            p { margin-bottom: 10px; }
+            .image-container img { max-height: 75vh; }
+            .game-header { padding: 10px 20px; margin-bottom: 10px; }
+            var(--btn-height) { clamp(60px, 15vh, 80px); }
         }
     </style>
 </head>
 <body>
-    <div id="loading-overlay">
-        <div class="spinner"></div>
-        <p style="margin-top: 15px; font-weight: 500; font-size: 0.9rem;">กำลังโหลดข้อมูลรูปภาพ...</p>
+
+    <!-- ==========================================
+         PAGE 1: HOME SCREEN
+         ========================================== -->
+    <section id="home-screen" class="screen active">
+        <div class="card">
+            <h1>เนื้อคู่ของคุณเป็นใคร?</h1>
+            <p>เกมทดสอบการสังเกตและรูปแบบการตัดสินใจของคุณ ผ่านการค้นหาจุดผิดปกติในรูปภาพ</p>
+            
+            <hr style="border: 0; border-top: 2px solid #f1f5f9; margin: 25px 0;">
+            
+            <h2 style="text-align: center; margin-bottom: 20px; font-family: 'Prompt', sans-serif; font-size: var(--font-large);">บอกเราหน่อย คุณคือใคร?</h2>
+            
+            <button onclick="setGender('ชาย', this)" class="btn btn-gender">ผู้ชาย</button>
+            <button onclick="setGender('หญิง', this)" class="btn btn-gender">ผู้หญิง</button>
+            <button onclick="setGender('ไม่ระบุ', this)" class="btn btn-text">ไม่ระบุเพศ</button>
+
+            <div style="margin-top: 35px;">
+                <button onclick="openModal()" class="btn btn-secondary">วิธีเล่นเกม</button>
+                <button id="btn-start" onclick="startGame()" class="btn btn-primary" disabled>เริ่มเล่นเกม</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         PAGE 2: GAME & RESULT SCREEN
+         ========================================== -->
+    <section id="game-screen" class="screen">
+        <div class="game-header">
+            <span>หาจุดผิดในภาพ</span>
+            <span>เหลือ: <span id="attempts-left" style="color: var(--secondary);">3</span> ครั้ง</span>
+        </div>
+
+        <div class="game-wrapper">
+            <p id="loading-text" style="margin-bottom: 20px;">กำลังโหลดข้อมูลรูปภาพ...</p>
+            
+            <!-- Container ที่ออกแบบมาให้โอบรัดรูปภาพพอดีเป๊ะ -->
+            <div class="image-container" id="image-container" style="display: none;">
+                <img id="game-image" src="" alt="Game Image">
+                <div class="click-layer" id="click-layer"></div>
+            </div>
+        </div>
+
+        <!-- RESULT SECTION -->
+        <div id="result-section">
+            <div class="card" style="margin-bottom: 0;">
+                <h1 style="color: var(--primary);">เนื้อคู่ของคุณ...</h1>
+                <h2 id="res-title" style="text-align: center; font-family: 'Prompt', sans-serif; font-size: var(--font-large); margin: 15px 0; color: var(--text-main);">...</h2>
+                <p id="res-desc" style="margin-bottom: 25px;">...</p>
+
+                <div style="text-align: center; color: #94a3b8; margin-bottom: 25px; font-size: var(--font-sm);">
+                    *จุดสีเทาบนภาพคือตำแหน่งที่ถูกต้องทั้งหมด
+                </div>
+
+                <button onclick="resetGame()" class="btn btn-primary" style="margin-bottom: 0;">เล่นใหม่อีกครั้ง</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         MODAL: HOW TO PLAY
+         ========================================== -->
+    <div id="how-to-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>วิธีการเล่น</h2>
+            <ul>
+                <li>ในภาพจะมีจุดผิดปกติซ่อนอยู่ <b>3 จุด</b></li>
+                <li>ใช้นิ้วแตะหรือคลิกเพื่อค้นหาจุดเหล่านั้น</li>
+                <li><b>คุณมีโอกาสเลือกได้เพียง 3 ครั้ง!</b></li>
+                <li>ระบบจะวิเคราะห์รูปแบบการกด เพื่อทำนายนิสัยและตัวตนที่แท้จริงของคุณ</li>
+            </ul>
+            <button onclick="closeModal()" class="btn btn-primary" style="margin-bottom: 0;">เข้าใจแล้ว</button>
+        </div>
     </div>
 
-    <!-- Welcome & Gender Screen -->
-    <section id="welcome-screen" class="screen active">
-        <div class="card">
-            <div class="logo-icon">🔍💖</div>
-            <h1>เนื้อคู่ของคุณเป็นใคร?</h1>
-            <p>เกมทดสอบการสังเกตและรูปแบบการตัดสินใจของคุณ<br>ผ่านการค้นหาจุดผิดปกติในรูปภาพ</p>
-            
-            <div style="margin-top: 25px; border-top: 1px dashed #d1e5f5; padding-top: 20px;">
-                <h3 style="margin-bottom: 15px; color: var(--text-secondary); font-size: 1rem;">บอกเราหน่อย คุณคือใคร?</h3>
-                <div class="grid grid-cols-1 gap-3">
-                    <button onclick="setGender('Male')" class="btn-minimal px-6 py-4 rounded-2xl font-semibold text-lg flex items-center justify-center">
-                        ชาย
-                    </button>
-                    <button onclick="setGender('Female')" class="btn-minimal px-6 py-4 rounded-2xl font-semibold text-lg flex items-center justify-center">
-                        หญิง
-                    </button>
-                    <button onclick="setGender('Unspecified')" class="px-6 py-3 rounded-2xl font-medium text-sm text-gray-400 hover:text-gray-600 transition-colors mt-2">
-                        ไม่ระบุ
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- How To Play Screen -->
-    <section id="how-to-screen" class="screen">
-        <div class="card">
-            <h2>วิธีการเล่น</h2>
-            <ul class="rules-list">
-                <li>ในภาพจะมี <strong>จุดผิดปกติซ่อนอยู่ 3 จุด</strong></li>
-                <li>คุณมีสิทธิ์ <strong>คลิกได้ 3 ครั้งเท่านั้น</strong></li>
-                <li>พยายามหาจุดที่ผิดปกติและคลิกให้ตรงตำแหน่ง</li>
-                <li>ผลลัพธ์จะบอกรูปแบบการสังเกตของคุณ</li>
-            </ul>
-            <div style="display: flex; justify-content: center;">
-                <button class="btn" onclick="startGame()" style="width: 100%;">เริ่มเล่นเกมเลย!</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Game Screen -->
-    <section id="game-screen" class="screen">
-        <div class="game-hud">
-            <div class="hud-item">
-                <span class="hud-label">ครั้งที่เหลือ</span>
-                <span class="hud-value" id="hud-attempts">3 / 3</span>
-            </div>
-            <div class="hud-item">
-                <span class="hud-label">หมวดหมู่</span>
-                <span class="hud-value" id="hud-category" style="font-size: clamp(0.9rem, 2.5vw, 1.1rem);">-</span>
-            </div>
-        </div>
-
-        <div class="image-wrapper">
-            <div class="image-container" id="game-container">
-                <img id="game-image" src="" alt="Game Image">
-                <div class="click-area" id="click-area"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Result Screen -->
-    <section id="result-screen" class="screen">
-        <div class="card">
-            <h2 id="res-personality-title" style="color: var(--primary);">กำลังประมวลผล...</h2>
-            <p id="res-personality-desc">...</p>
-
-            <div class="stats-grid" style="margin-top: 25px;">
-                <!-- เอาการ์ด เพศ และ เวลาที่ใช้ ออกจากตรงนี้ -->
-                <div class="stat-card">
-                    <div style="color: var(--success);">เจอจุดถูก</div>
-                    <strong id="res-correct" style="color: var(--text-primary);">0</strong>
-                </div>
-                <div class="stat-card">
-                    <div style="color: var(--secondary);">กดผิด</div>
-                    <strong id="res-wrong" style="color: var(--text-primary);">0</strong>
-                </div>
-            </div>
-            <button class="btn" style="width: 100%;" onclick="resetGame()">เล่นใหม่อีกครั้ง</button>
-        </div>
-    </section>
-
+    <!-- ==========================================
+         JAVASCRIPT LOGIC
+         ========================================== -->
     <script>
-        // ใส่ URL ที่ได้จาก Google Apps Script ของคุณที่นี่ **แค่จุดเดียว**
         const GAS_URL = "https://script.google.com/macros/s/AKfycbwz9eO1RTPgoS0MxaXfh9G8elCtm_xgMy48tI7r2A_aytCyCfXTPokSNw_BbHEiS8x6/exec"; 
-        
-        function getVisitorId() {
-            let vid = localStorage.getItem('soulmate_visitorId');
-            if (!vid) {
-                vid = 'vid_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
-                localStorage.setItem('soulmate_visitorId', vid);
-            }
-            return vid;
-        }
 
         let state = {
-            playerGender: null, imagesData: [], currentImage: null,
-            attemptsLeft: 3, maxAttempts: 3, clickSequence: [], foundPoints: [],
-            startTime: null, timeUsed: 0
+            playerGender: null,
+            visitorId: getVisitorId(),
+            startTime: 0,
+            images: [],
+            currentImage: null,
+            attempts: 0,
+            maxAttempts: 3,
+            clickSequence: [],
+            patterns: {}
         };
 
-        const MOCK_IMAGES = [
-            {
-                imageId: 1,
-                imageUrl: "https://images.unsplash.com/photo-1513694203232-719a280e022f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-                title: "ห้องนั่งเล่นอบอุ่น", difficulty: "easy", category: "Home", radius: 8,
-                points: [{ id: 1, x: 25, y: 40 }, { id: 2, x: 75, y: 30 }, { id: 3, x: 50, y: 80 }]
-            },
-            {
-                imageId: 2,
-                imageUrl: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-                title: "คาเฟ่ชิลๆ", difficulty: "medium", category: "Cafe", radius: 6,
-                points: [{ id: 1, x: 15, y: 55 }, { id: 2, x: 85, y: 45 }, { id: 3, x: 45, y: 70 }]
+        const MOCK_PATTERNS = {
+            "1,2,3": { title: "นักวิเคราะห์แบบเป็นระบบ", desc: "คุณมองโลกตามความเป็นจริงและมีเหตุผล ตัดสินใจอย่างเป็นขั้นเป็นตอน" },
+            "W,W,W": { title: "ใช้สัญชาตญาณและการเดาสูง", desc: "คุณชอบลองผิดลองถูก ไม่กลัวความล้มเหลว เชื่อมั่นในความรู้สึกแรกของตัวเอง" }
+        };
+
+        // -----------------------------------------
+        // Utilities
+        // -----------------------------------------
+        function getVisitorId() {
+            let vid = localStorage.getItem('soulmate_vid');
+            if (!vid) {
+                vid = 'v_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('soulmate_vid', vid);
             }
-        ];
-
-        let PATTERN_DB = {
-            "1,2,3": { id: 1, title: "นักวิเคราะห์แบบเป็นระบบ", desc: "คุณมองเห็นภาพรวมและเจาะจงรายละเอียดอย่างเป็นขั้นตอน มักตัดสินใจด้วยเหตุผล" },
-            "1,3,2": { id: 2, title: "ผู้สังเกตการณ์ข้ามช็อต", desc: "คุณเห็นจุดเริ่มต้นและตอนจบก่อน แล้วค่อยเติมเต็มช่องว่างตรงกลาง" },
-            "2,1,3": { id: 3, title: "นักสำรวจใจกลาง", desc: "คุณมักให้ความสนใจกับสิ่งที่โดดเด่นตรงกลางก่อนจะมองหาองค์ประกอบรอบข้าง" },
-            "2,3,1": { id: 4, title: "ผู้ตามสัญชาตญาณ", desc: "คุณมักดึงดูดกับจุดที่คนอื่นมองข้าม เป็นคนมีมุมมองแปลกใหม่ไม่เหมือนใคร" },
-            "3,1,2": { id: 5, title: "นักแก้ปัญหาแบบย้อนกลับ", desc: "คุณชอบมองจากผลลัพธ์ย้อนกลับมาหาจุดเริ่มต้น เป็นนักวางแผนที่เก่งกาจ" },
-            "3,2,1": { id: 6, title: "ขบถผู้น่ารัก", desc: "คุณชอบทำอะไรสวนกระแส ไม่ชอบเดินตามกรอบที่ใครวางไว้" },
-            "W,1,2": { id: 7, title: "ผู้กล้าลองผิดลองถูก", desc: "การสะดุดล้มครั้งแรกไม่ใช่ปัญหา คุณเรียนรู้เร็วและกลับมาจับจุดได้เสมอ" },
-            "1,W,2": { id: 8, title: "ผู้ต้องการความมั่นใจ", desc: "เริ่มต้นได้ดี แต่อาจลังเลกลางทาง ทว่าสุดท้ายก็หาทางกลับมาได้" },
-            "1,2,W": { id: 9, title: "นักวิ่งที่เหนื่อยปลาย", desc: "คุณทำได้ดีมากในตอนต้น แต่อาจเสียสมาธิในตอนท้ายนิดหน่อย" },
-            "W,2,1": { id: 10, title: "เพชรในตม", desc: "อาจเริ่มต้นได้ไม่สวยงาม แต่คุณมีศักยภาพซ่อนอยู่และจะฉายแสงเมื่อถึงเวลา" },
-            "2,W,1": { id: 11, title: "ศิลปินอารมณ์ศิลป์", desc: "การตัดสินใจของคุณขึ้นอยู่กับความรู้สึก อาจจะดูไม่ปะติดปะต่อแต่มีเสน่ห์" },
-            "2,1,W": { id: 12, title: "ผู้มองข้ามช็อตสุดท้าย", desc: "คุณเก็บรายละเอียดสำคัญได้หมด แต่อาจปล่อยวางกับเรื่องเล็กน้อยในตอนท้าย" },
-            "W,1,3": { id: 13, title: "นักเรียนรู้จากความผิดพลาด", desc: "ผิดเป็นครู คือคติประจำใจของคุณ พลาดแล้วจะระวังตัวมากขึ้น" },
-            "1,W,3": { id: 14, title: "ลองผิดลองถูกก่อนสังเกต", desc: "คุณชอบทดสอบสมมติฐานด้วยการลงมือทำ มากกว่านั่งคิดทฤษฎี" },
-            "1,3,W": { id: 15, title: "นักมองข้ามสเตป", desc: "คุณมักคิดเร็วทำเร็ว จนบางครั้งอาจพลาดรายละเอียดเล็กๆ ไปบ้าง" },
-            "W,3,1": { id: 16, title: "ผู้ปรับตัวยอดเยี่ยม", desc: "ไม่ว่าจะเจอสถานการณ์แบบไหน คุณก็สามารถตั้งสติและหาทางแก้ไขได้" },
-            "3,W,1": { id: 17, title: "นักคิดนอกกรอบผู้โดดเดี่ยว", desc: "ความคิดคุณมักล้ำหน้าคนอื่น จนบางครั้งก็หลงทางไปบ้างแต่ก็กลับมาได้" },
-            "3,1,W": { id: 18, title: "ผู้ปล่อยวางในตอนจบ", desc: "คุณโฟกัสสิ่งที่สำคัญที่สุดไปแล้ว ส่วนที่เหลือคือโบนัส ไม่ซีเรียส" },
-            "W,2,3": { id: 19, title: "นักปีนเขา", desc: "เริ่มต้นจากความยากลำบาก แต่ยิ่งทำยิ่งเข้ามือ ไต่ระดับความสำเร็จได้ดี" },
-            "2,W,3": { id: 20, title: "ผู้ชื่นชอบความท้าทาย", desc: "คุณชอบทำสิ่งที่ยากก่อน สิ่งง่ายๆ อาจทำให้คุณเผลอเรอได้" },
-            "2,3,W": { id: 21, title: "นักสำรวจที่พึงพอใจ", desc: "เมื่อเจอสิ่งที่พอใจแล้ว คุณอาจจะลดความพยายามลงในตอนท้าย" },
-            "W,3,2": { id: 22, title: "ผู้เริ่มจากจุดที่ยาก", desc: "คุณมองโลกในมุมที่ซับซ้อน พอเจอเรื่องง่ายกลับคิดลึกเกินไป" },
-            "3,W,2": { id: 23, title: "นักสลับสับเปลี่ยน", desc: "คุณมีความยืดหยุ่นสูง ปรับเปลี่ยนแผนได้ตลอดเวลา" },
-            "3,2,W": { id: 24, title: "ผู้ใช้พลังงานคุ้มค่า", desc: "ทุ่มเทเต็มที่กับสิ่งยากๆ ไปแล้ว ตอนท้ายเลยขอชิลล์บ้าง" },
-            "1,W,W": { id: 25, title: "ผู้เริ่มต้นที่มุ่งมั่น", desc: "คุณมักจะทำได้ดีในตอนแรกที่พลังงานยังเต็มเปี่ยม" },
-            "W,1,W": { id: 26, title: "ผู้ค้นพบกลางทาง", desc: "คุณมักจะเจอคำตอบที่ใช่ในเวลาที่ไม่ได้คาดหวัง" },
-            "W,W,1": { id: 27, title: "นักสู้ผู้ไม่ยอมแพ้", desc: "แม้จะล้มกี่ครั้ง คุณก็ยังฮึดสู้จนเจอความสำเร็จในวินาทีสุดท้าย" },
-            "2,W,W": { id: 28, title: "ผู้มีสายตาแหลมคม (ชั่วคราว)", desc: "คุณมักจะมองเห็นสิ่งที่คนอื่นไม่เห็น แต่ความสนใจมักอยู่ไม่นาน" },
-            "W,2,W": { id: 29, title: "นักแสวงหา", desc: "คุณลองทำสิ่งต่างๆ มากมาย เพื่อตามหาจุดที่พอดีกับตัวเอง" },
-            "W,W,2": { id: 30, title: "ผู้ค้นพบอย่างบังเอิญ", desc: "โชคชะตามักเข้าข้างคุณในตอนที่คุณเกือบจะถอดใจ" },
-            "3,W,W": { id: 31, title: "วิสัยทัศน์กว้างไกล", desc: "คุณมองเห็นเป้าหมายที่ไกลที่สุด แต่อาจมองข้ามสิ่งที่อยู่ใกล้ตัว" },
-            "W,3,W": { id: 32, title: "ผู้มีจังหวะของตัวเอง", desc: "คุณไม่รีบร้อนและมีวิธีเข้าถึงความสำเร็จในแบบที่ไม่เหมือนใคร" },
-            "W,W,3": { id: 33, title: "นักเก็บตกตอนจบ", desc: "คุณคือผู้ปิดเกมที่มักจะคว้าโอกาสสุดท้ายไว้ได้เสมอ" },
-            "W,W,W": { id: 34, title: "ผู้ใช้สัญชาตญาณและการเดา", desc: "คุณเป็นคนสบายๆ ไม่คิดมาก ปล่อยให้โชคชะตาและความรู้สึกพาไป!" }
-        };
-
-        window.onload = async () => {
-            await fetchGameData();
-            document.getElementById('loading-overlay').style.opacity = '0';
-            setTimeout(() => document.getElementById('loading-overlay').style.display = 'none', 400);
-        };
-
-        async function fetchGameData() {
-            try {
-                if(!GAS_URL || GAS_URL === "YOUR_GAS_URL_HERE") throw new Error("No GAS URL Configured");
-                
-                const res = await fetch(GAS_URL + "?action=getData");
-                
-                // ดักจับ Error กรณี GAS คืนค่าเป็นหน้าเว็บ HTML ล็อคอิน (Permission ผิด)
-                const textData = await res.text();
-                let data;
-                try {
-                    data = JSON.parse(textData);
-                } catch (e) {
-                    throw new Error("ข้อมูลที่ส่งกลับมาไม่ใช่ JSON (เช็คสิทธิ์ Deployment ว่าต้องตั้งเป็น 'ทุกคน' หรือ 'Anyone')");
-                }
-                
-                // 1. นำเข้าข้อมูลรูปภาพ (ถ้ามี)
-                if(data.images && data.images.length > 0) {
-                    state.imagesData = data.images;
-                    console.log("✅ ดึงข้อมูลรูปภาพสำเร็จ:", data.images.length, "รูป");
-                } else {
-                    console.warn("⚠️ ไม่พบข้อมูลรูปภาพ (ใช้รูปภาพตัวอย่างแทน)");
-                    state.imagesData = MOCK_IMAGES;
-                }
-
-                // 2. นำเข้าข้อมูล Pattern (ถ้ามี)
-                if(data.patterns && Object.keys(data.patterns).length > 0) {
-                    PATTERN_DB = data.patterns;
-                    console.log("✅ ดึงข้อมูล PATTERN_DB สำเร็จ!");
-                } else {
-                    console.warn("⚠️ ไม่พบข้อมูล PATTERN_DB (ใช้ข้อมูลตัวอย่างแทน)");
-                }
-                
-            } catch (error) {
-                console.error("❌ การเชื่อมต่อหลังบ้านล้มเหลว:", error.message);
-                state.imagesData = MOCK_IMAGES;
-            }
-        }
-
-        async function postResults(resultData) {
-            try {
-                // เช็คว่าถ้ายังไม่ได้ใส่ URL ไม่ต้องส่งข้อมูลไปหลังบ้าน
-                if(!GAS_URL || GAS_URL === "YOUR_GAS_URL_HERE") return;
-                
-                await fetch(GAS_URL, {
-                    method: 'POST', mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(resultData)
-                });
-            } catch(e) { console.error("Post error:", e); }
+            return vid;
         }
 
         function navTo(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
-            window.scrollTo(0,0);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function triggerHaptic(type) {
-            if (!navigator.vibrate) return;
-            try {
-                if (type === 'success') navigator.vibrate(50); 
-                else if (type === 'error') navigator.vibrate([40, 60, 40]); 
-                else navigator.vibrate(20); 
-            } catch(e) {}
+        // Modal Controls with Transitions
+        function openModal() { 
+            const modal = document.getElementById('how-to-modal');
+            modal.style.display = 'flex';
+            // Force reflow
+            void modal.offsetWidth;
+            modal.classList.add('show');
         }
-
-        function setGender(genderValue) {
-            triggerHaptic('tap');
-            const element = event.currentTarget;
-            
-            // แปลงค่าเป็นภาษาไทยเพื่อการจัดเก็บที่สอดคล้องกัน
-            const genderMap = { 'Male': 'ชาย', 'Female': 'หญิง', 'Unspecified': 'ไม่ระบุ' };
-            state.playerGender = genderMap[genderValue] || genderValue;
-            
-            // อัปเดต UI (ไฮไลท์ปุ่มที่ถูกเลือก)
-            if (element && element.classList.contains('btn-minimal')) {
-                document.querySelectorAll('.btn-minimal').forEach(btn => btn.classList.remove('selected'));
-                element.classList.add('selected');
-            }
-            
-            // ข้ามไปหน้าวิธีเล่นอัตโนมัติ โดยหน่วงเวลาเล็กน้อย
-            setTimeout(() => {
-                navTo('how-to-screen');
-            }, 350);
-        }
-
-        function startGame() {
-            triggerHaptic('tap');
-            const randomIdx = Math.floor(Math.random() * state.imagesData.length);
-            state.currentImage = state.imagesData[randomIdx];
-            
-            state.attemptsLeft = state.maxAttempts;
-            state.clickSequence = []; state.foundPoints = []; state.timeUsed = 0;
-            
-            document.getElementById('game-image').src = state.currentImage.imageUrl;
-            document.getElementById('hud-category').textContent = state.currentImage.category;
-            updateHUD();
-            
-            const area = document.getElementById('click-area');
-            area.innerHTML = '';
-            // Handle both touch and click for better mobile response
-            area.onclick = handleImageClick;
-
-            state.startTime = Date.now();
-            state.timeUsed = 0;
-
-            navTo('game-screen');
-        }
-
-        function updateHUD() { document.getElementById('hud-attempts').textContent = `${state.attemptsLeft} / ${state.maxAttempts}`; }
         
-        function handleImageClick(e) {
-            if(state.attemptsLeft <= 0) return;
-
-            // Using bounding client rect calculates accurately regardless of scaling/resizing
-            const rect = e.target.getBoundingClientRect();
-            
-            // Handle touch events or mouse events
-            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-
-            const clickX = clientX - rect.left;
-            const clickY = clientY - rect.top;
-            
-            const clickXPercent = (clickX / rect.width) * 100;
-            const clickYPercent = (clickY / rect.height) * 100;
-
-            let hitPoint = null;
-            const radiusPx = (state.currentImage.radius / 100) * rect.width;
-
-            for (let pt of state.currentImage.points) {
-                const ptXPx = (pt.x / 100) * rect.width;
-                const ptYPx = (pt.y / 100) * rect.height;
-                // Calculate distance using Pythagoras
-                const distPx = Math.hypot(clickX - ptXPx, clickY - ptYPx);
-
-                if (distPx <= radiusPx) {
-                    if (!state.foundPoints.includes(pt.id)) hitPoint = pt;
-                    break;
-                }
-            }
-
-            processClickResult(hitPoint, clickXPercent, clickYPercent);
+        function closeModal() { 
+            const modal = document.getElementById('how-to-modal');
+            modal.classList.remove('show');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
         }
 
-        function processClickResult(hitPoint, xPercent, yPercent) {
-            const area = document.getElementById('click-area');
-            const marker = document.createElement('div');
-            marker.className = 'marker';
-            marker.style.left = `${xPercent}%`;
-            marker.style.top = `${yPercent}%`;
-            
-            // Size marker based on radius to match touch target
-            const markerSize = state.currentImage.radius * 2; 
-            marker.style.width = `${markerSize}%`;
-            marker.style.aspectRatio = '1 / 1';
+        function triggerVibration() {
+            // Haptic feedback สำหรับมือถือที่รองรับ
+            if (navigator.vibrate) navigator.vibrate(40);
+        }
 
-            if (hitPoint) {
-                triggerHaptic('success');
-                marker.classList.add('correct');
-                state.foundPoints.push(hitPoint.id);
-                state.clickSequence.push(hitPoint.id);
+        // -----------------------------------------
+        // UI & Flow
+        // -----------------------------------------
+        function setGender(gender, btnElement) {
+            triggerVibration();
+            state.playerGender = gender;
+            
+            document.querySelectorAll('.btn-gender, .btn-text').forEach(btn => btn.classList.remove('selected'));
+            
+            if(btnElement.classList.contains('btn-gender')) {
+                btnElement.classList.add('selected');
             } else {
-                triggerHaptic('error');
-                marker.classList.add('wrong');
-                state.clickSequence.push("W");
+                btnElement.style.color = 'var(--primary)';
             }
-
-            area.appendChild(marker);
-            state.attemptsLeft--;
-            updateHUD();
-
-            if (state.attemptsLeft <= 0) setTimeout(endGame, 800);
+            
+            document.getElementById('btn-start').disabled = false;
         }
 
-        function endGame() {
-            document.getElementById('click-area').onclick = null;
+        async function startGame() {
+            triggerVibration();
+            navTo('game-screen');
             
-            // คำนวณเวลาที่ใช้ไปทั้งหมดเมื่อจบเกม (วินาที)
-            state.timeUsed = Math.floor((Date.now() - state.startTime) / 1000);
-
-            const patternKey = state.clickSequence.join(',');
-            const resultData = PATTERN_DB[patternKey] || PATTERN_DB["W,W,W"];
-
-            renderResult(resultData);
+            document.getElementById('loading-text').style.display = 'block';
+            document.getElementById('image-container').style.display = 'none';
+            document.getElementById('result-section').style.display = 'none';
             
-            const correctCount = state.clickSequence.filter(x => x !== "W").length;
-            const saveData = {
-                timestamp: new Date().toISOString(),
-                visitorId: getVisitorId(),
+            // Clear old markers
+            document.querySelectorAll('.click-marker, .solution-marker').forEach(el => el.remove());
+
+            state.attempts = 0;
+            state.clickSequence = [];
+            document.getElementById('attempts-left').textContent = state.maxAttempts;
+
+            await fetchGameData();
+            
+            if (state.images.length > 0) {
+                state.currentImage = state.images[Math.floor(Math.random() * state.images.length)];
+                const imgEl = document.getElementById('game-image');
+                
+                // ตรวจจับเมื่อโหลดรูปเสร็จ
+                imgEl.onload = () => {
+                    document.getElementById('loading-text').style.display = 'none';
+                    document.getElementById('image-container').style.display = 'inline-block';
+                    state.startTime = Date.now();
+                };
+                imgEl.src = state.currentImage.imageUrl;
+            } else {
+                document.getElementById('loading-text').textContent = "ไม่พบข้อมูลรูปภาพ กรุณาตรวจสอบลิงก์หลังบ้าน";
+            }
+        }
+
+        // -----------------------------------------
+        // API Fetch & Post
+        // -----------------------------------------
+        async function fetchGameData() {
+            if(state.images.length > 0) return; 
+            
+            try {
+                if (GAS_URL === "YOUR_GAS_URL_HERE") throw new Error("No URL");
+                
+                const response = await fetch(GAS_URL);
+                const data = await response.json();
+                
+                if (data.images && data.images.length > 0) {
+                    state.images = data.images;
+                }
+                
+                if (data.patterns && Object.keys(data.patterns).length > 0) {
+                    state.patterns = data.patterns;
+                } else {
+                    state.patterns = MOCK_PATTERNS;
+                }
+            } catch (error) {
+                console.log("Using Mock Data");
+                state.patterns = MOCK_PATTERNS;
+                state.images = [{
+                    imageId: "mock1",
+                    imageUrl: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1000&q=80",
+                    title: "Mockup Space",
+                    category: "demo",
+                    radius: 8,
+                    points: [
+                        { id: 1, x: 25, y: 35 },
+                        { id: 2, x: 50, y: 60 },
+                        { id: 3, x: 75, y: 40 }
+                    ]
+                }];
+            }
+        }
+
+        async function postResult(patternStr, correctCount) {
+            if (GAS_URL === "YOUR_GAS_URL_HERE") return;
+            
+            const payload = {
+                visitorId: state.visitorId,
                 userAgent: navigator.userAgent,
                 gender: state.playerGender,
                 imageId: state.currentImage.imageId,
                 category: state.currentImage.category,
-                patternNumber: resultData.id,
-                answerSequence: patternKey,
+                answerSequence: patternStr,
                 correctCount: correctCount,
                 wrongCount: 3 - correctCount,
-                timeUsed: state.timeUsed
+                timeUsed: Math.floor((Date.now() - state.startTime) / 1000)
             };
 
-            localStorage.setItem('lastGameResult', JSON.stringify(saveData));
-            postResults(saveData);
-            navTo('result-screen');
+            try {
+                await fetch(GAS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (e) {
+                console.log("Post failed", e);
+            }
         }
 
-        function renderResult(resultData) {
-            document.getElementById('res-personality-title').textContent = resultData.title;
-            document.getElementById('res-personality-desc').textContent = resultData.desc;
+        // -----------------------------------------
+        // Core Gameplay (Click & Coordinate Math)
+        // -----------------------------------------
+        document.getElementById('click-layer').addEventListener('click', function(e) {
+            if (state.attempts >= state.maxAttempts) return;
+            
+            triggerVibration();
+            
+            // คำนวณพิกัดให้เป็น % ตามขนาดรูปภาพที่แสดงผลจริง (Responsive 100%)
+            const rect = this.getBoundingClientRect();
+            const clickX = ((e.clientX - rect.left) / rect.width) * 100;
+            const clickY = ((e.clientY - rect.top) / rect.height) * 100;
+            
+            let foundPoint = null;
+            const radius = state.currentImage.radius || 8;
+            
+            for (let pt of state.currentImage.points) {
+                const dx = clickX - pt.x;
+                const dy = clickY - pt.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance <= radius && !state.clickSequence.includes(pt.id)) {
+                    foundPoint = pt;
+                    break;
+                }
+            }
 
-            // คำนวณจำนวนที่กดถูกจาก array โดยตรง (ไม่สร้าง element หน้าเว็บแล้ว)
-            let correctCount = state.clickSequence.filter(item => item !== "W").length;
+            // วาดวงกลมจุดที่คลิก
+            const marker = document.createElement('div');
+            marker.className = 'click-marker ' + (foundPoint ? 'marker-correct' : 'marker-wrong');
+            marker.style.left = clickX + '%';
+            marker.style.top = clickY + '%';
+            document.getElementById('image-container').appendChild(marker);
 
-            // เอาคำสั่งอัปเดต res-gender และ res-time ออก
-            document.getElementById('res-correct').textContent = correctCount;
-            document.getElementById('res-wrong').textContent = 3 - correctCount;
+            state.clickSequence.push(foundPoint ? foundPoint.id : "W");
+            state.attempts++;
+            document.getElementById('attempts-left').textContent = state.maxAttempts - state.attempts;
+
+            // ตรวจสอบจบเกม
+            if (state.attempts >= state.maxAttempts) {
+                setTimeout(endGame, 400); // ดีเลย์นิดนึงให้เห็นจุดที่ 3
+            }
+        });
+
+        function endGame() {
+            triggerVibration();
+            const patternStr = state.clickSequence.join(",");
+            const resultData = state.patterns[patternStr] || { title: "บุคลิกแบบผสมผสาน", desc: "รูปแบบของคุณมีความเป็นเอกลักษณ์ ไม่ตรงกับ 34 แบบปกติ" };
+            
+            const correctCount = state.clickSequence.filter(item => item !== "W").length;
+
+            document.getElementById('res-title').textContent = resultData.title;
+            document.getElementById('res-desc').textContent = resultData.desc;
+            
+            document.getElementById('result-section').style.display = 'block';
+
+            showSolution();
+
+            // เลื่อนจอลงมาให้ผู้สูงอายุมองเห็นผลลัพธ์อัตโนมัติ
+            setTimeout(() => {
+                document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+
+            postResult(patternStr, correctCount);
         }
 
-        function resetGame() { 
-            triggerHaptic('tap'); 
-            
-            // ไม่ทำการล้างค่า state.playerGender เพื่อให้คงสถานะเพศเดิมไว้
-            
-            // เปลี่ยนให้เด้งกลับไปที่หน้า 'วิธีการเล่น' ทันที
-            navTo('how-to-screen'); 
+        function showSolution() {
+            const container = document.getElementById('image-container');
+            state.currentImage.points.forEach((pt, index) => {
+                let marker = document.createElement('div');
+                marker.className = 'solution-marker';
+                marker.style.left = pt.x + '%';
+                marker.style.top = pt.y + '%';
+                marker.textContent = index + 1;
+                container.appendChild(marker);
+            });
+        }
+
+        function resetGame() {
+            triggerVibration();
+            navTo('home-screen');
+            // เพศยังคงถูกจดจำไว้ใน state.playerGender
         }
     </script>
 </body>
