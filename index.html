@@ -548,7 +548,7 @@
             }
         }
 
-        async function postResult(patternStr, correctCount) {
+        async function postResult(patternStr, correctCount, patternNumber) {
             if (GAS_URL === "YOUR_GAS_URL_HERE") return;
             
             const payload = {
@@ -557,6 +557,7 @@
                 gender: state.playerGender,
                 imageId: state.currentImage.imageId,
                 category: state.currentImage.category,
+                patternNumber: patternNumber || "-", // เพิ่มบรรทัดนี้เพื่อส่งค่า Pattern Number
                 answerSequence: patternStr,
                 correctCount: correctCount,
                 wrongCount: 3 - correctCount,
@@ -622,9 +623,11 @@
         function endGame() {
             triggerVibration();
             const patternStr = state.clickSequence.join(",");
-            const resultData = state.patterns[patternStr] || { title: "บุคลิกแบบผสมผสาน", desc: "รูปแบบของคุณมีความเป็นเอกลักษณ์ ไม่ตรงกับ 34 แบบปกติ" };
+            // ดึงข้อมูลพร้อมกับ id
+            const resultData = state.patterns[patternStr] || { id: "-", title: "บุคลิกแบบผสมผสาน", desc: "รูปแบบของคุณมีความเป็นเอกลักษณ์ ไม่ตรงกับ 34 แบบปกติ" };
             
             const correctCount = state.clickSequence.filter(item => item !== "W").length;
+            const patternNumber = resultData.id; // เก็บค่ารหัส Pattern
 
             document.getElementById('res-title').textContent = resultData.title;
             document.getElementById('res-desc').textContent = resultData.desc;
@@ -638,7 +641,8 @@
                 document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 100);
 
-            postResult(patternStr, correctCount);
+            // ส่ง patternNumber พ่วงไปด้วย
+            postResult(patternStr, correctCount, patternNumber);
         }
 
         function showSolution() {
